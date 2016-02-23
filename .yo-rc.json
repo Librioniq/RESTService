@@ -1,0 +1,25 @@
+{
+  "generator-jhipster": {
+    "baseName": "Librioniq",
+    "packageName": "com.playtech.librioniq",
+    "packageFolder": "com/playtech/librioniq",
+    "authenticationType": "oauth2",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "useSass": true,
+    "buildTool": "gradle",
+    "frontendBuilder": "gulp",
+    "enableTranslation": true,
+    "enableSocialSignIn": false,
+    "rememberMeKey": "8640216a4605f82dac63c8514218c30dda04149e",
+    "testFrameworks": [
+      "gatling",
+      "cucumber"
+    ]
+  }
+}
