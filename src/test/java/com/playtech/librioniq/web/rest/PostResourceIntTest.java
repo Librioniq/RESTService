@@ -2,21 +2,20 @@ package com.playtech.librioniq.web.rest;
 
 import com.playtech.librioniq.Application;
 import com.playtech.librioniq.domain.Post;
+import com.playtech.librioniq.domain.PostType;
 import com.playtech.librioniq.repository.PostRepository;
 import com.playtech.librioniq.service.PostService;
 import com.playtech.librioniq.web.rest.dto.PostDTO;
 import com.playtech.librioniq.web.rest.mapper.PostMapper;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.hasItem;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -29,6 +28,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -47,8 +47,8 @@ public class PostResourceIntTest {
     private static final String DEFAULT_CONTENT = "AAAAA";
     private static final String UPDATED_CONTENT = "BBBBB";
 
-    private static final Integer DEFAULT_TYPE = 1;
-    private static final Integer UPDATED_TYPE = 2;
+    private static final PostType DEFAULT_TYPE = PostType.COMMENT;
+    private static final PostType UPDATED_TYPE = PostType.ANSWER;
 
     @Inject
     private PostRepository postRepository;
@@ -96,9 +96,9 @@ public class PostResourceIntTest {
         PostDTO postDTO = postMapper.postToPostDTO(post);
 
         restPostMockMvc.perform(post("/api/posts")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-                .andExpect(status().isCreated());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isCreated());
 
         // Validate the Post in the database
         List<Post> posts = postRepository.findAll();
@@ -119,9 +119,9 @@ public class PostResourceIntTest {
         PostDTO postDTO = postMapper.postToPostDTO(post);
 
         restPostMockMvc.perform(post("/api/posts")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isBadRequest());
 
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(databaseSizeBeforeTest);
@@ -138,9 +138,9 @@ public class PostResourceIntTest {
         PostDTO postDTO = postMapper.postToPostDTO(post);
 
         restPostMockMvc.perform(post("/api/posts")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-                .andExpect(status().isBadRequest());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isBadRequest());
 
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(databaseSizeBeforeTest);
@@ -154,11 +154,11 @@ public class PostResourceIntTest {
 
         // Get all the posts
         restPostMockMvc.perform(get("/api/posts?sort=id,desc"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(post.getId().intValue())))
-                .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
-                .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(post.getId().intValue())))
+            .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)));
     }
 
     @Test
@@ -181,7 +181,7 @@ public class PostResourceIntTest {
     public void getNonExistingPost() throws Exception {
         // Get the post
         restPostMockMvc.perform(get("/api/posts/{id}", Long.MAX_VALUE))
-                .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -190,7 +190,7 @@ public class PostResourceIntTest {
         // Initialize the database
         postRepository.saveAndFlush(post);
 
-		int databaseSizeBeforeUpdate = postRepository.findAll().size();
+        int databaseSizeBeforeUpdate = postRepository.findAll().size();
 
         // Update the post
         post.setContent(UPDATED_CONTENT);
@@ -198,9 +198,9 @@ public class PostResourceIntTest {
         PostDTO postDTO = postMapper.postToPostDTO(post);
 
         restPostMockMvc.perform(put("/api/posts")
-                .contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-                .andExpect(status().isOk());
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isOk());
 
         // Validate the Post in the database
         List<Post> posts = postRepository.findAll();
@@ -216,12 +216,12 @@ public class PostResourceIntTest {
         // Initialize the database
         postRepository.saveAndFlush(post);
 
-		int databaseSizeBeforeDelete = postRepository.findAll().size();
+        int databaseSizeBeforeDelete = postRepository.findAll().size();
 
         // Get the post
         restPostMockMvc.perform(delete("/api/posts/{id}", post.getId())
-                .accept(TestUtil.APPLICATION_JSON_UTF8))
-                .andExpect(status().isOk());
+            .accept(TestUtil.APPLICATION_JSON_UTF8))
+            .andExpect(status().isOk());
 
         // Validate the database is empty
         List<Post> posts = postRepository.findAll();

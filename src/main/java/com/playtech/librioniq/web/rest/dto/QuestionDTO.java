@@ -6,19 +6,16 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.Set;
 
 
 /**
  * A DTO for the Post entity.
  */
-public class PostDTO implements Serializable {
+public class QuestionDTO implements Serializable {
 
     private Long id;
 
@@ -118,7 +115,7 @@ public class PostDTO implements Serializable {
             return false;
         }
 
-        PostDTO postDTO = (PostDTO) o;
+        QuestionDTO postDTO = (QuestionDTO) o;
 
         if (!Objects.equals(id, postDTO.id)) return false;
 
