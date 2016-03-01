@@ -6,7 +6,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,7 +16,7 @@ import java.util.Set;
 @Table(name = "post")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "post")
-public class Post extends AbstractAuditingEntity{
+public class Post extends AbstractAuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +30,10 @@ public class Post extends AbstractAuditingEntity{
     @Column(name = "type", nullable = false)
     @Enumerated
     private PostType type;
+
+    @Column(name = "rating", nullable = false)
+    @NotNull
+    private Integer rating = 0;
 
     @OneToMany
     private Set<Post> children;
@@ -65,6 +68,14 @@ public class Post extends AbstractAuditingEntity{
 
     public void setChildren(Set<Post> children) {
         this.children = children;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     @Override
