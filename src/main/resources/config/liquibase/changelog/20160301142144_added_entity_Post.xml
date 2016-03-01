@@ -22,15 +22,34 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="content" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            
+
             <column name="type" type="integer">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
-            
+
+            <column name="rating" type="integer">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="reset_date" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="last_modified_by" type="varchar(50)"/>
+
+            <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>
