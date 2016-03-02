@@ -1,5 +1,6 @@
 package com.playtech.librioniq.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -36,7 +37,13 @@ public class Post extends AbstractAuditingEntity {
     private Integer rating = 0;
 
     @OneToMany
-    private Set<Post> children;
+    @JoinTable(
+        name = "post_to_posts",
+        joinColumns = {@JoinColumn(name = "parent_id", referencedColumnName = "id")},
+        inverseJoinColumns = {@JoinColumn(name = "child_id", referencedColumnName = "id")})
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Post> posts;
 
     public Long getId() {
         return id;
@@ -62,12 +69,12 @@ public class Post extends AbstractAuditingEntity {
         this.type = type;
     }
 
-    public Set<Post> getChildren() {
-        return children;
+    public Set<Post> getPosts() {
+        return posts;
     }
 
-    public void setChildren(Set<Post> children) {
-        this.children = children;
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 
     public Integer getRating() {
