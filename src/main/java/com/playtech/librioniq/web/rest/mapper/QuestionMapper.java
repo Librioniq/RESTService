@@ -6,7 +6,7 @@ import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 import org.mapstruct.Mapper;
 
 /**
- * Mapper for the entity Post and its DTO PostDTO.
+ * Mapper for the entities Post, Question and its DTO QuestionDTO.
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface QuestionMapper {

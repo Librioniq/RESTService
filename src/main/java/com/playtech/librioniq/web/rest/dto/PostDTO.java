@@ -34,16 +34,16 @@ public class PostDTO implements Serializable {
 
     @CreatedDate
     @NotNull
-    private ZonedDateTime createdDate = ZonedDateTime.now();
+    private ZonedDateTime createdDate;
 
     @LastModifiedBy
     private String lastModifiedBy;
 
     @LastModifiedDate
-    private ZonedDateTime lastModifiedDate = ZonedDateTime.now();
+    private ZonedDateTime lastModifiedDate;
 
     @NotNull
-    private Integer rating = 0;
+    private Integer rating;
 
     public Long getId() {
         return id;

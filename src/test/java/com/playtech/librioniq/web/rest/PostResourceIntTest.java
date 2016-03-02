@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +45,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @IntegrationTest
 public class PostResourceIntTest {
+
+    private static final String DEFAULT_CREATED_BY = "admin";
+    private static final String UPDATED_CREATED_BY = "user";
+
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.now();
+    private static final ZonedDateTime UPDATED_CREATED_DATE = DEFAULT_CREATED_DATE.plus(10, ChronoUnit.DAYS);
+
+    private static final Integer DEFAULT_RATING = 0;
+    private static final Integer UPDATED_RATING = 1;
 
     private static final String DEFAULT_CONTENT = "AAAAA";
     private static final String UPDATED_CONTENT = "BBBBB";
@@ -83,8 +94,12 @@ public class PostResourceIntTest {
     @Before
     public void initTest() {
         post = new Post();
+
         post.setContent(DEFAULT_CONTENT);
         post.setType(DEFAULT_TYPE);
+        post.setRating(DEFAULT_RATING);
+        post.setCreatedBy(DEFAULT_CREATED_BY);
+        post.setCreatedDate(DEFAULT_CREATED_DATE);
     }
 
     @Test
@@ -106,6 +121,63 @@ public class PostResourceIntTest {
         Post testPost = posts.get(posts.size() - 1);
         assertThat(testPost.getContent()).isEqualTo(DEFAULT_CONTENT);
         assertThat(testPost.getType()).isEqualTo(DEFAULT_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void checkCreatedByIsRequired() throws Exception {
+        int databaseSizeBeforeTest = postRepository.findAll().size();
+        // set the field null
+        post.setCreatedBy(null);
+
+        // Create the Post, which fails.
+        PostDTO postDTO = postMapper.postToPostDTO(post);
+
+        restPostMockMvc.perform(post("/api/posts")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkCreatedDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = postRepository.findAll().size();
+        // set the field null
+        post.setCreatedDate(null);
+
+        // Create the Post, which fails.
+        PostDTO postDTO = postMapper.postToPostDTO(post);
+
+        restPostMockMvc.perform(post("/api/posts")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkRatingIsRequired() throws Exception {
+        int databaseSizeBeforeTest = postRepository.findAll().size();
+        // set the field null
+        post.setRating(null);
+
+        // Create the Post, which fails.
+        PostDTO postDTO = postMapper.postToPostDTO(post);
+
+        restPostMockMvc.perform(post("/api/posts")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -195,6 +267,10 @@ public class PostResourceIntTest {
         // Update the post
         post.setContent(UPDATED_CONTENT);
         post.setType(UPDATED_TYPE);
+        post.setRating(UPDATED_RATING);
+        post.setCreatedBy(UPDATED_CREATED_BY);
+        post.setCreatedDate(UPDATED_CREATED_DATE);
+
         PostDTO postDTO = postMapper.postToPostDTO(post);
 
         restPostMockMvc.perform(put("/api/posts")
@@ -205,9 +281,14 @@ public class PostResourceIntTest {
         // Validate the Post in the database
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(databaseSizeBeforeUpdate);
+
         Post testPost = posts.get(posts.size() - 1);
+
         assertThat(testPost.getContent()).isEqualTo(UPDATED_CONTENT);
         assertThat(testPost.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testPost.getRating()).isEqualTo(UPDATED_RATING);
+        assertThat(testPost.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
+        assertThat(testPost.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
     }
 
     @Test
