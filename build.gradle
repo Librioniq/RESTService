@@ -12,14 +12,14 @@ buildscript {
         classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: spring_boot_version
         classpath group: 'org.springframework.build.gradle', name: 'propdeps-plugin', version: '0.0.7'
         classpath group: 'com.moowork.gradle', name: 'gradle-node-plugin', version: '0.11'
-  	    classpath group: 'com.moowork.gradle', name: 'gradle-gulp-plugin', version: '0.11'
+        classpath group: 'com.moowork.gradle', name: 'gradle-gulp-plugin', version: '0.11'
         //jhipster-needle-gradle-buildscript-dependency - JHipster will add additional gradle build script plugins here
     }
 }
 
 apply plugin: 'java'
-sourceCompatibility=1.8
-targetCompatibility=1.8
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 apply plugin: 'maven'
 apply plugin: 'spring-boot'
 apply plugin: 'war'
@@ -27,7 +27,7 @@ apply plugin: 'propdeps'
 defaultTasks 'bootRun'
 
 bootRepackage {
-   mainClass = 'com.playtech.librioniq.Application'
+    mainClass = 'com.playtech.librioniq.Application'
 }
 
 war {
@@ -70,7 +70,7 @@ if (project.hasProperty('prod')) {
 } else if (project.hasProperty('fast')) {
     apply from: 'profile_fast.gradle'
 } else {
-  apply from: 'profile_dev.gradle'
+    apply from: 'profile_dev.gradle'
 }
 
 group = 'com.playtech.librioniq'
@@ -100,7 +100,7 @@ dependencies {
     compile group: 'io.dropwizard.metrics', name: 'metrics-jvm', version: dropwizard_metrics_version
     compile group: 'io.dropwizard.metrics', name: 'metrics-servlet', version: dropwizard_metrics_version
     compile group: 'io.dropwizard.metrics', name: 'metrics-json', version: dropwizard_metrics_version
-    compile (group: 'io.dropwizard.metrics', name: 'metrics-servlets', version: dropwizard_metrics_version) {
+    compile(group: 'io.dropwizard.metrics', name: 'metrics-servlets', version: dropwizard_metrics_version) {
         exclude(module: 'metrics-healthchecks')
     }
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-json-org', version: jackson_version
@@ -109,7 +109,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate4', version: jackson_version
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
-    compile (group: 'com.ryantenney.metrics', name: 'metrics-spring', version: metrics_spring_version) {
+    compile(group: 'com.ryantenney.metrics', name: 'metrics-spring', version: metrics_spring_version) {
         exclude(module: 'metrics-core')
         exclude(module: 'metrics-healthchecks')
     }
@@ -123,12 +123,12 @@ dependencies {
     compile group: 'org.apache.geronimo.javamail', name: 'geronimo-javamail_1.4_mail', version: geronimo_javamail_1_4_mail_version
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernate_entitymanager_version
 
-    compile (group: 'org.hibernate', name: 'hibernate-ehcache') {
+    compile(group: 'org.hibernate', name: 'hibernate-ehcache') {
         exclude(module: 'ehcache-core')
     }
     compile group: 'org.hibernate', name: 'hibernate-envers'
     compile group: 'org.hibernate', name: 'hibernate-validator'
-    compile (group: 'org.liquibase', name: 'liquibase-core', version: liquibase_core_version) {
+    compile(group: 'org.liquibase', name: 'liquibase-core', version: liquibase_core_version) {
         exclude(module: 'jetty-servlet')
     }
     compile group: 'com.mattbertolini', name: 'liquibase-slf4j', version: liquibase_slf4j_version
@@ -154,7 +154,7 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-data', version: spring_security_version
     compile group: 'org.springframework.security', name: 'spring-security-web', version: spring_security_version
     compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: spring_security_oauth2_version
-    compile(group: 'io.springfox', name: 'springfox-swagger2', version: springfox_version){
+    compile(group: 'io.springfox', name: 'springfox-swagger2', version: springfox_version) {
         exclude module: 'mapstruct'
     }
 
@@ -167,7 +167,7 @@ dependencies {
     testCompile group: 'info.cukes', name: 'cucumber-junit', version: cucumber_version
     testCompile group: 'info.cukes', name: 'cucumber-spring', version: cucumber_version
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-	  testCompile group: 'org.assertj', name: 'assertj-core', version: assertj_core_version
+    testCompile group: 'org.assertj', name: 'assertj-core', version: assertj_core_version
     testCompile group: 'junit', name: 'junit'
     testCompile group: 'org.mockito', name: 'mockito-core'
     testCompile group: 'com.mattbertolini', name: 'liquibase-slf4j', version: liquibase_slf4j_version
@@ -175,7 +175,7 @@ dependencies {
 
     testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatling_version
 
-    optional group: 'org.springframework.boot', name:'spring-boot-configuration-processor', version: spring_boot_version
+    optional group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: spring_boot_version
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }
 
