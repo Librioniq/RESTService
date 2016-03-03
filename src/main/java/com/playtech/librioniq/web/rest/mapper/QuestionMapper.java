@@ -1,6 +1,7 @@
 package com.playtech.librioniq.web.rest.mapper;
 
 import com.playtech.librioniq.domain.Post;
+import com.playtech.librioniq.domain.Question;
 import com.playtech.librioniq.web.rest.dto.PostDTO;
 import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 import org.mapstruct.Mapper;
@@ -10,7 +11,7 @@ import org.mapstruct.Mapper;
  */
 @Mapper(componentModel = "spring", uses = {})
 public interface QuestionMapper {
-    QuestionDTO postToQuestionDTO(Post post);
+    QuestionDTO questionToQuestionDTO(Question question);
 
-    Post questionDTOToPost(QuestionDTO questionDTO);
+    Question questionDTOToQuestion(QuestionDTO questionDTO);
 }

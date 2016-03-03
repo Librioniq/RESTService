@@ -15,6 +15,8 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "post")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.INTEGER)
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "post")
 public class Post extends AbstractAuditingEntity {
@@ -94,10 +96,7 @@ public class Post extends AbstractAuditingEntity {
             return false;
         }
         Post post = (Post) o;
-        if (post.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, post.id);
+        return !(post.id == null || id == null) && Objects.equals(id, post.id);
     }
 
     @Override
