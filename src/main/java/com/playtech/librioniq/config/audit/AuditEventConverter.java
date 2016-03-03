@@ -1,7 +1,6 @@
 package com.playtech.librioniq.config.audit;
 
 import com.playtech.librioniq.domain.PersistentAuditEvent;
-
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
@@ -52,8 +51,8 @@ public class AuditEventConverter {
         Map<String, Object> results = new HashMap<>();
 
         if (data != null) {
-            for (String key : data.keySet()) {
-                results.put(key, data.get(key));
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                results.put(entry.getKey(), entry.getValue());
             }
         }
         return results;
@@ -70,8 +69,9 @@ public class AuditEventConverter {
         Map<String, String> results = new HashMap<>();
 
         if (data != null) {
-            for (String key : data.keySet()) {
-                Object object = data.get(key);
+            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                final String key = entry.getKey();
+                final Object object = entry.getValue();
 
                 // Extract the data that will be saved.
                 if (object instanceof WebAuthenticationDetails) {

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -16,14 +17,13 @@ import java.util.Objects;
  * A DTO for the Post entity.
  */
 public class QuestionDTO implements Serializable {
-
     private Long id;
 
     @NotNull
     private String content;
 
     @NotNull
-    private PostType type;
+    private String title;
 
     @CreatedBy
     @NotNull
@@ -56,14 +56,6 @@ public class QuestionDTO implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public PostType getType() {
-        return type;
-    }
-
-    public void setType(PostType type) {
-        this.type = type;
     }
 
     public String getCreatedBy() {
@@ -106,6 +98,14 @@ public class QuestionDTO implements Serializable {
         this.rating = rating;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,9 +117,7 @@ public class QuestionDTO implements Serializable {
 
         QuestionDTO postDTO = (QuestionDTO) o;
 
-        if (!Objects.equals(id, postDTO.id)) return false;
-
-        return true;
+        return Objects.equals(id, postDTO.id);
     }
 
     @Override
@@ -132,7 +130,7 @@ public class QuestionDTO implements Serializable {
         return "PostDTO{" +
             "id=" + id +
             ", content='" + content + "'" +
-            ", type='" + type + "'" +
+            ", title='" + title + "'" +
             '}';
     }
 }
