@@ -6,7 +6,9 @@ import com.playtech.librioniq.domain.PostType;
 import com.playtech.librioniq.repository.PostRepository;
 import com.playtech.librioniq.service.PostService;
 import com.playtech.librioniq.web.rest.dto.PostDTO;
+import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 import com.playtech.librioniq.web.rest.mapper.PostMapper;
+import com.playtech.librioniq.web.rest.mapper.QuestionMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,16 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 @IntegrationTest
-public class PostResourceIntTest {
-
-    private static final String DEFAULT_CREATED_BY = "admin";
-    private static final String UPDATED_CREATED_BY = "user";
-
-    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.now();
-    private static final ZonedDateTime UPDATED_CREATED_DATE = DEFAULT_CREATED_DATE.plus(10, ChronoUnit.DAYS);
-
-    private static final Integer DEFAULT_RATING = 0;
-    private static final Integer UPDATED_RATING = 1;
+public class QuestionResourceIntTest {
 
     private static final String DEFAULT_CONTENT = "AAAAA";
     private static final String UPDATED_CONTENT = "BBBBB";
@@ -65,7 +56,7 @@ public class PostResourceIntTest {
     private PostRepository postRepository;
 
     @Inject
-    private PostMapper postMapper;
+    private QuestionMapper questionMapper;
 
     @Inject
     private PostService postService;
@@ -76,17 +67,17 @@ public class PostResourceIntTest {
     @Inject
     private PageableHandlerMethodArgumentResolver pageableArgumentResolver;
 
-    private MockMvc restPostMockMvc;
+    private MockMvc restQuestionMockMvc;
 
     private Post post;
 
     @PostConstruct
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PostResource postResource = new PostResource();
+        QuestionResource postResource = new QuestionResource();
         ReflectionTestUtils.setField(postResource, "postService", postService);
-        ReflectionTestUtils.setField(postResource, "postMapper", postMapper);
-        this.restPostMockMvc = MockMvcBuilders.standaloneSetup(postResource)
+        ReflectionTestUtils.setField(postResource, "questionMapper", questionMapper);
+        this.restQuestionMockMvc = MockMvcBuilders.standaloneSetup(postResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setMessageConverters(jacksonMessageConverter).build();
     }
@@ -94,23 +85,19 @@ public class PostResourceIntTest {
     @Before
     public void initTest() {
         post = new Post();
-
         post.setContent(DEFAULT_CONTENT);
         post.setType(DEFAULT_TYPE);
-        post.setRating(DEFAULT_RATING);
-        post.setCreatedBy(DEFAULT_CREATED_BY);
-        post.setCreatedDate(DEFAULT_CREATED_DATE);
     }
 
     @Test
     @Transactional
-    public void createPost() throws Exception {
+    public void createQuestion() throws Exception {
         int databaseSizeBeforeCreate = postRepository.findAll().size();
 
         // Create the Post
-        PostDTO postDTO = postMapper.postToPostDTO(post);
+        QuestionDTO postDTO = questionMapper.postToQuestionDTO(post);
 
-        restPostMockMvc.perform(post("/api/posts")
+        restQuestionMockMvc.perform(post("/api/question")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(postDTO)))
             .andExpect(status().isCreated());
@@ -125,74 +112,17 @@ public class PostResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCreatedByIsRequired() throws Exception {
-        int databaseSizeBeforeTest = postRepository.findAll().size();
-        // set the field null
-        post.setCreatedBy(null);
-
-        // Create the Post, which fails.
-        PostDTO postDTO = postMapper.postToPostDTO(post);
-
-        restPostMockMvc.perform(post("/api/posts")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Post> posts = postRepository.findAll();
-        assertThat(posts).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkCreatedDateIsRequired() throws Exception {
-        int databaseSizeBeforeTest = postRepository.findAll().size();
-        // set the field null
-        post.setCreatedDate(null);
-
-        // Create the Post, which fails.
-        PostDTO postDTO = postMapper.postToPostDTO(post);
-
-        restPostMockMvc.perform(post("/api/posts")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Post> posts = postRepository.findAll();
-        assertThat(posts).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkRatingIsRequired() throws Exception {
-        int databaseSizeBeforeTest = postRepository.findAll().size();
-        // set the field null
-        post.setRating(null);
-
-        // Create the Post, which fails.
-        PostDTO postDTO = postMapper.postToPostDTO(post);
-
-        restPostMockMvc.perform(post("/api/posts")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Post> posts = postRepository.findAll();
-        assertThat(posts).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void checkContentIsRequired() throws Exception {
         int databaseSizeBeforeTest = postRepository.findAll().size();
         // set the field null
         post.setContent(null);
 
         // Create the Post, which fails.
-        PostDTO postDTO = postMapper.postToPostDTO(post);
+        QuestionDTO questionDTO = questionMapper.postToQuestionDTO(post);
 
-        restPostMockMvc.perform(post("/api/posts")
+        restQuestionMockMvc.perform(post("/api/question")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(questionDTO)))
             .andExpect(status().isBadRequest());
 
         List<Post> posts = postRepository.findAll();
@@ -207,11 +137,11 @@ public class PostResourceIntTest {
         post.setType(null);
 
         // Create the Post, which fails.
-        PostDTO postDTO = postMapper.postToPostDTO(post);
+        QuestionDTO questionDTO = questionMapper.postToQuestionDTO(post);
 
-        restPostMockMvc.perform(post("/api/posts")
+        restQuestionMockMvc.perform(post("/api/question")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(questionDTO)))
             .andExpect(status().isBadRequest());
 
         List<Post> posts = postRepository.findAll();
@@ -225,12 +155,12 @@ public class PostResourceIntTest {
         postRepository.saveAndFlush(post);
 
         // Get all the posts
-        restPostMockMvc.perform(get("/api/posts?sort=id,desc"))
+        restQuestionMockMvc.perform(get("/api/question?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(post.getId().intValue())))
-            .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(String.valueOf(DEFAULT_TYPE))));
+            .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)));
     }
 
     @Test
@@ -240,19 +170,19 @@ public class PostResourceIntTest {
         postRepository.saveAndFlush(post);
 
         // Get the post
-        restPostMockMvc.perform(get("/api/posts/{id}", post.getId()))
+        restQuestionMockMvc.perform(get("/api/question/{id}", post.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(post.getId().intValue()))
-            .andExpect(jsonPath("$.content").value(DEFAULT_CONTENT))
-            .andExpect(jsonPath("$.type").value(String.valueOf(DEFAULT_TYPE)));
+            .andExpect(jsonPath("$.content").value(DEFAULT_CONTENT.toString()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE));
     }
 
     @Test
     @Transactional
     public void getNonExistingPost() throws Exception {
         // Get the post
-        restPostMockMvc.perform(get("/api/posts/{id}", Long.MAX_VALUE))
+        restQuestionMockMvc.perform(get("/api/question/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
 
@@ -267,28 +197,19 @@ public class PostResourceIntTest {
         // Update the post
         post.setContent(UPDATED_CONTENT);
         post.setType(UPDATED_TYPE);
-        post.setRating(UPDATED_RATING);
-        post.setCreatedBy(UPDATED_CREATED_BY);
-        post.setCreatedDate(UPDATED_CREATED_DATE);
+        QuestionDTO questionDTO = questionMapper.postToQuestionDTO(post);
 
-        PostDTO postDTO = postMapper.postToPostDTO(post);
-
-        restPostMockMvc.perform(put("/api/posts")
+        restQuestionMockMvc.perform(put("/api/question")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(postDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(questionDTO)))
             .andExpect(status().isOk());
 
         // Validate the Post in the database
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(databaseSizeBeforeUpdate);
-
         Post testPost = posts.get(posts.size() - 1);
-
         assertThat(testPost.getContent()).isEqualTo(UPDATED_CONTENT);
         assertThat(testPost.getType()).isEqualTo(UPDATED_TYPE);
-        assertThat(testPost.getRating()).isEqualTo(UPDATED_RATING);
-        assertThat(testPost.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testPost.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
     }
 
     @Test
@@ -300,7 +221,7 @@ public class PostResourceIntTest {
         int databaseSizeBeforeDelete = postRepository.findAll().size();
 
         // Get the post
-        restPostMockMvc.perform(delete("/api/posts/{id}", post.getId())
+        restQuestionMockMvc.perform(delete("/api/question/{id}", post.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 

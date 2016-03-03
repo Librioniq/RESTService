@@ -50,6 +50,30 @@
             <column name="last_modified_date" type="timestamp"/>
             <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
         </createTable>
+        <createTable tableName="post_to_posts">
+            <column name="parent_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="child_id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints nullable="false"/>
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - Jhipster will add columns here, do not remove-->
+        </createTable>
+
+        <addPrimaryKey columnNames="parent_id, child_id" tableName="post_to_posts"/>
+
+        <addForeignKeyConstraint baseColumnNames="parent_id"
+                                 baseTableName="post_to_posts"
+                                 constraintName="fk_parent_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="post"/>
+
+        <addForeignKeyConstraint baseColumnNames="child_id"
+                                 baseTableName="post_to_posts"
+                                 constraintName="fk_child_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="post"/>
 
     </changeSet>
 </databaseChangeLog>

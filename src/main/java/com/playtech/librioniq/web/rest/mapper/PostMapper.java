@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 /**
  * Mapper for the entity Post and its DTO PostDTO.
  */
-@Component
 @Mapper(componentModel = "spring", uses = {})
 public interface PostMapper {
 
