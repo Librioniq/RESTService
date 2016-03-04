@@ -1,5 +1,6 @@
 package com.playtech.librioniq.service;
 
+import com.playtech.librioniq.web.rest.dto.AnswerDTO;
 import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 
 import java.util.List;
@@ -14,21 +15,21 @@ public interface AnswerService {
      *
      * @return the persisted entity
      */
-    public QuestionDTO save(QuestionDTO questionDTO);
+    public AnswerDTO save(Long questionId, AnswerDTO answerDTO);
 
     /**
      * get all the questions.
      *
      * @return the list of entities
      */
-    public List<QuestionDTO> findAll();
+    public List<AnswerDTO> findAll();
 
     /**
      * get the "id" question.
      *
      * @return the entity
      */
-    public QuestionDTO findOne(Long id);
+    public AnswerDTO findOne(Long id);
 
     /**
      * delete the "id" post.

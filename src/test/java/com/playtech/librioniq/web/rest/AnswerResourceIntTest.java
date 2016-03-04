@@ -1,17 +1,15 @@
 package com.playtech.librioniq.web.rest;
 
+import com.google.common.collect.Sets;
 import com.playtech.librioniq.Application;
 import com.playtech.librioniq.domain.Answer;
-import com.playtech.librioniq.domain.Post;
 import com.playtech.librioniq.domain.PostType;
+import com.playtech.librioniq.domain.Question;
 import com.playtech.librioniq.repository.AnswerRepository;
-import com.playtech.librioniq.repository.PostRepository;
+import com.playtech.librioniq.repository.QuestionRepository;
 import com.playtech.librioniq.service.AnswerService;
-import com.playtech.librioniq.service.PostService;
 import com.playtech.librioniq.web.rest.dto.AnswerDTO;
-import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 import com.playtech.librioniq.web.rest.mapper.AnswerMapper;
-import com.playtech.librioniq.web.rest.mapper.QuestionMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,6 +66,8 @@ public class AnswerResourceIntTest {
 
     @Inject
     private AnswerRepository answerRepository;
+    @Inject
+    private QuestionRepository questionRepository;
 
     @Inject
     private AnswerMapper answerMapper;
@@ -84,6 +84,7 @@ public class AnswerResourceIntTest {
     private MockMvc restAnswerMockMvc;
 
     private Answer answer;
+    private Question question;
 
     @PostConstruct
     public void setup() {
@@ -99,6 +100,13 @@ public class AnswerResourceIntTest {
     @Before
     public void initTest() {
         answer = new Answer();
+        question = new Question();
+
+        question.setContent(DEFAULT_CONTENT);
+        question.setType(DEFAULT_TYPE);
+        question.setRating(DEFAULT_RATING);
+        question.setCreatedBy(DEFAULT_CREATED_BY);
+        question.setCreatedDate(DEFAULT_CREATED_DATE);
 
         answer.setContent(DEFAULT_CONTENT);
         answer.setType(DEFAULT_TYPE);
@@ -109,13 +117,13 @@ public class AnswerResourceIntTest {
 
     @Test
     @Transactional
-    public void createQuestion() throws Exception {
+    public void createAnswer() throws Exception {
         int databaseSizeBeforeCreate = answerRepository.findAll().size();
-
+        question = questionRepository.save(question);
         // Create the Post
         AnswerDTO answerDTO = answerMapper.answerToAnswerDTO(answer);
 
-        restAnswerMockMvc.perform(post("/api/questions/{id}/answers")
+        restAnswerMockMvc.perform(post("/api/questions/{id}/answers", question.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(answerDTO)))
             .andExpect(status().isCreated());
@@ -123,19 +131,22 @@ public class AnswerResourceIntTest {
         // Validate the Post in the database
         List<Answer> answers = answerRepository.findAll();
         assertThat(answers).hasSize(databaseSizeBeforeCreate + 1);
-        Post testPost = answers.get(answers.size() - 1);
-        assertThat(testPost.getContent()).isEqualTo(DEFAULT_CONTENT);
-        assertThat(testPost.getType()).isEqualTo(DEFAULT_TYPE);
+        Answer testAnswer = answers.get(answers.size() - 1);
+        assertThat(testAnswer.getContent()).isEqualTo(DEFAULT_CONTENT);
+        assertThat(testAnswer.getType()).isEqualTo(DEFAULT_TYPE);
     }
 
     @Test
     @Transactional
-    public void getAllPosts() throws Exception {
+    public void getAllQuestionsAnswers() throws Exception {
         // Initialize the database
         answerRepository.saveAndFlush(answer);
 
+        question.setPosts(Sets.newHashSet(answer));
+        questionRepository.saveAndFlush(question);
+
         // Get all the posts
-        restAnswerMockMvc.perform(get("/api/questions/{qId}/answers?sort=id,desc"))
+        restAnswerMockMvc.perform(get("/api/questions/{qId}/answers?sort=id,desc", question.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.[*].id").value(hasItem(answer.getId().intValue())))
@@ -145,15 +156,18 @@ public class AnswerResourceIntTest {
 
     @Test
     @Transactional
-    public void getPost() throws Exception {
+    public void getAnswer() throws Exception {
         // Initialize the database
-        postRepository.saveAndFlush(post);
+        answerRepository.saveAndFlush(answer);
+
+        question.setPosts(Sets.newHashSet(answer));
+        questionRepository.saveAndFlush(question);
 
         // Get the post
-        restQuestionMockMvc.perform(get("/api/question/{id}", post.getId()))
+        restAnswerMockMvc.perform(get("/api/questions/{qId}/answers/{aId}", question.getId(), answer.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.id").value(post.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(answer.getId().intValue()))
             .andExpect(jsonPath("$.content").value(DEFAULT_CONTENT))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE));
     }
@@ -170,43 +184,49 @@ public class AnswerResourceIntTest {
     @Transactional
     public void updatePost() throws Exception {
         // Initialize the database
-        postRepository.saveAndFlush(post);
+        answerRepository.saveAndFlush(answer);
 
-        int databaseSizeBeforeUpdate = postRepository.findAll().size();
+        question.setPosts(Sets.newHashSet(answer));
+        questionRepository.saveAndFlush(question);
+
+        int databaseSizeBeforeUpdate = answerRepository.findAll().size();
 
         // Update the post
-        post.setContent(UPDATED_CONTENT);
-        post.setType(UPDATED_TYPE);
-        QuestionDTO questionDTO = questionMapper.postToQuestionDTO(post);
+        answer.setContent(UPDATED_CONTENT);
+        answer.setType(UPDATED_TYPE);
+        AnswerDTO answerDTO = answerMapper.answerToAnswerDTO(answer);
 
-        restQuestionMockMvc.perform(put("/api/questions")
+        restAnswerMockMvc.perform(put("/api/questions/{qId}/answers", question.getId())
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(questionDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(answerDTO)))
             .andExpect(status().isOk());
 
         // Validate the Post in the database
-        List<Post> posts = postRepository.findAll();
-        assertThat(posts).hasSize(databaseSizeBeforeUpdate);
-        Post testPost = posts.get(posts.size() - 1);
-        assertThat(testPost.getContent()).isEqualTo(UPDATED_CONTENT);
-        assertThat(testPost.getType()).isEqualTo(UPDATED_TYPE);
+        List<Answer> answers = answerRepository.findAll();
+        assertThat(answers).hasSize(databaseSizeBeforeUpdate);
+        Answer testAnswer = answers.get(answers.size() - 1);
+        assertThat(testAnswer.getContent()).isEqualTo(UPDATED_CONTENT);
+        assertThat(testAnswer.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test
     @Transactional
     public void deletePost() throws Exception {
         // Initialize the database
-        postRepository.saveAndFlush(post);
+        answerRepository.saveAndFlush(answer);
 
-        int databaseSizeBeforeDelete = postRepository.findAll().size();
+        question.setPosts(Sets.newHashSet(answer));
+        questionRepository.saveAndFlush(question);
+
+        int databaseSizeBeforeDelete = answerRepository.findAll().size();
 
         // Get the post
-        restQuestionMockMvc.perform(delete("/api/questions/{id}", post.getId())
+        restAnswerMockMvc.perform(delete("/api/questions/{qId}/answers/{aId}", question.getId(), answer.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
         // Validate the database is empty
-        List<Post> posts = postRepository.findAll();
-        assertThat(posts).hasSize(databaseSizeBeforeDelete - 1);
+        List<Answer> answers = answerRepository.findAll();
+        assertThat(answers).hasSize(databaseSizeBeforeDelete - 1);
     }
 }
