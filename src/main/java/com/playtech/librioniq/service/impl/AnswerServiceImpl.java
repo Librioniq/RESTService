@@ -1,26 +1,18 @@
 package com.playtech.librioniq.service.impl;
 
-import com.playtech.librioniq.domain.Answer;
-import com.playtech.librioniq.domain.Post;
 import com.playtech.librioniq.repository.AnswerRepository;
 import com.playtech.librioniq.repository.search.AnswerSearchRepository;
 import com.playtech.librioniq.service.AnswerService;
-import com.playtech.librioniq.service.PostService;
 import com.playtech.librioniq.web.rest.dto.AnswerDTO;
-import com.playtech.librioniq.web.rest.dto.PostDTO;
 import com.playtech.librioniq.web.rest.mapper.AnswerMapper;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Post.
@@ -45,15 +37,19 @@ public class AnswerServiceImpl implements AnswerService {
      *
      * @return the persisted entity
      */
+    @Override
     public AnswerDTO save(Long questionId, AnswerDTO answerDTO) {
         log.debug("Request to save Answer : {}", answerDTO);
 
-        Answer answer = answerMapper.answerDTOToAnswer(answerDTO);
-        answer = answerRepository.save(answer);
-        AnswerDTO result = answerMapper.answerToAnswerDTO(answer);
-        answerSearchRepository.save(answer);
+//        Answer answer = answerMapper.answerDTOToAnswer(answerDTO);
+//        answer = answerRepository.save(answer);
+//        AnswerDTO result = answerMapper.answerToAnswerDTO(answer);
+//        answerSearchRepository.save(answer);
+//
+//        return result;
 
-        return result;
+
+        throw new NotImplementedException("#findAll not implemented yet");
     }
 
     /**
@@ -61,13 +57,12 @@ public class AnswerServiceImpl implements AnswerService {
      *
      * @return the list of entities
      */
+    @Override
     @Transactional(readOnly = true)
     public List<AnswerDTO> findAll() {
         log.debug("Request to get all Posts");
-        List<PostDTO> result = postRepository.findAll().stream()
-            .map(postMapper::postToPostDTO)
-            .collect(Collectors.toCollection(LinkedList::new));
-        return result;
+
+        throw new NotImplementedException("#findAll not implemented yet");
     }
 
     /**
@@ -75,34 +70,37 @@ public class AnswerServiceImpl implements AnswerService {
      *
      * @return the entity
      */
+    @Override
     @Transactional(readOnly = true)
-    public PostDTO findOne(Long id) {
+    public AnswerDTO findOne(Long id) {
         log.debug("Request to get Post : {}", id);
-        Post post = postRepository.findOne(id);
-        PostDTO postDTO = postMapper.postToPostDTO(post);
-        return postDTO;
+
+        throw new NotImplementedException("#findOne not implemented yet");
     }
 
     /**
      * delete the  post by id.
      */
+    @Override
     public void delete(Long id) {
         log.debug("Request to delete Post : {}", id);
-        postRepository.delete(id);
-        postSearchRepository.delete(id);
+
+        throw new NotImplementedException("#delete not implemented yet");
     }
 
     /**
      * search for the post corresponding
      * to the query.
      */
+    @Override
     @Transactional(readOnly = true)
-    public List<PostDTO> search(String query) {
+    public List<AnswerDTO> search(String query) {
 
         log.debug("REST request to search Posts for query {}", query);
-        return StreamSupport
-            .stream(postSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(postMapper::postToPostDTO)
-            .collect(Collectors.toList());
+//        return StreamSupport
+//            .stream(postSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+//            .map(postMapper::postToPostDTO)
+//            .collect(Collectors.toList());
+        throw new NotImplementedException("#search not implemented yet");
     }
 }

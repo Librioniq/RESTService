@@ -40,5 +40,5 @@ public interface AnswerService {
      * search for the question corresponding
      * to the query.
      */
-    public List<QuestionDTO> search(String query);
+    public List<AnswerDTO> search(String query);
 }
