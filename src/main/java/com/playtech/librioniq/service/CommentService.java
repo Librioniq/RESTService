@@ -1,43 +1,22 @@
 package com.playtech.librioniq.service;
 
-import com.playtech.librioniq.web.rest.dto.QuestionDTO;
+import com.playtech.librioniq.web.rest.dto.CommentDTO;
 
 import java.util.List;
 
-/**
- * Service Interface for managing Post.
- */
-public interface CommentService {
+public interface CommentService extends PostService{
 
     /**
-     * Save a question.
-     *
-     * @return the persisted entity
+     * Save comment
+     * @param commentDTO
+     * @return
      */
-    public QuestionDTO save(QuestionDTO questionDTO);
+    CommentDTO save(CommentDTO commentDTO);
 
     /**
-     * get all the questions.
-     *
-     * @return the list of entities
+     * Find all comments for post
+     * @param postId
+     * @return
      */
-    public List<QuestionDTO> findAll();
-
-    /**
-     * get the "id" question.
-     *
-     * @return the entity
-     */
-    public QuestionDTO findOne(Long id);
-
-    /**
-     * delete the "id" post.
-     */
-    public void delete(Long id);
-
-    /**
-     * search for the question corresponding
-     * to the query.
-     */
-    public List<QuestionDTO> search(String query);
+    List<CommentDTO> findAllCommentsForPost(Long postId);
 }

@@ -5,8 +5,6 @@ import com.playtech.librioniq.domain.Post;
 import com.playtech.librioniq.domain.PostType;
 import com.playtech.librioniq.repository.PostRepository;
 import com.playtech.librioniq.service.PostService;
-import com.playtech.librioniq.web.rest.dto.PostDTO;
-import com.playtech.librioniq.web.rest.mapper.PostMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

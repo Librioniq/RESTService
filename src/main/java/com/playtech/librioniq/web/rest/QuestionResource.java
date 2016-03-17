@@ -2,14 +2,12 @@ package com.playtech.librioniq.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.playtech.librioniq.service.PostService;
-import com.playtech.librioniq.web.rest.dto.PostDTO;
+import com.playtech.librioniq.service.QuestionService;
 import com.playtech.librioniq.web.rest.dto.QuestionDTO;
-import com.playtech.librioniq.web.rest.mapper.PostMapper;
 import com.playtech.librioniq.web.rest.util.HeaderUtil;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for managing Post.
@@ -32,11 +29,9 @@ public class QuestionResource {
     private final Logger log = LoggerFactory.getLogger(QuestionResource.class);
 
     @Inject
-    private PostService postService;
+    private QuestionService questionService;
 
-    @Inject
-    private PostMapper postMapper;
-
+    // TODO Needs updating
     /**
      * POST  /questions -> Create a new question.
      */
@@ -46,8 +41,15 @@ public class QuestionResource {
     @Timed
     public ResponseEntity<QuestionDTO> createQuestion(@Valid @RequestBody QuestionDTO questionDTO) throws URISyntaxException {
         log.debug("REST request to save Question : {}", questionDTO);
-
-        throw new NotImplementedException("#updateQuestion has not implemented yet");
+        return null;
+/*
+        if (questionDTO.getId() != null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("question", "idExists", "New question can not have an id")).body(null);
+        }
+        QuestionDTO result = postService.save(questionDTO);
+        return ResponseEntity.created(new URI("/api/questions/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert("question", result.getId().toString()))
+                .body(result);*/
     }
 
     /**
@@ -59,8 +61,15 @@ public class QuestionResource {
     @Timed
     public ResponseEntity<QuestionDTO> updateQuestion(@Valid @RequestBody QuestionDTO questionDTO) throws URISyntaxException {
         log.debug("REST request to update Question : {}", questionDTO);
-
-        throw new NotImplementedException("#updateQuestion has not implemented yet");
+        return null;
+/*
+        if (questionDTO.getId() == null) {
+            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("question", "idNotExists", "Try to update non-existing question")).body(null);
+        }
+        QuestionDTO result = postService.save(questionDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityUpdateAlert("question", questionDTO.getId().toString()))
+                .body(result);*/
     }
 
     /**
@@ -73,8 +82,8 @@ public class QuestionResource {
     @Transactional(readOnly = true)
     public List<QuestionDTO> getAllQuestions() {
         log.debug("REST request to get all Questions");
-
-        throw new NotImplementedException("#getAllQuestions has not implemented yet");
+        return null;
+//        return postService.findAllQuestions();
     }
 
     /**

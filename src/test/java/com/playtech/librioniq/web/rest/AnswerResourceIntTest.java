@@ -7,7 +7,6 @@ import com.playtech.librioniq.domain.PostType;
 import com.playtech.librioniq.domain.Question;
 import com.playtech.librioniq.repository.AnswerRepository;
 import com.playtech.librioniq.repository.QuestionRepository;
-import com.playtech.librioniq.service.AnswerService;
 import com.playtech.librioniq.web.rest.dto.AnswerDTO;
 import com.playtech.librioniq.web.rest.mapper.AnswerMapper;
 import org.junit.Before;

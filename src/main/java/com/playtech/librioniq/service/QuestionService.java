@@ -4,40 +4,25 @@ import com.playtech.librioniq.web.rest.dto.QuestionDTO;
 
 import java.util.List;
 
-/**
- * Service Interface for managing Post.
- */
-public interface QuestionService {
+public interface QuestionService extends PostService {
+    /**
+     * Save question
+     * @param questionDTO
+     * @return
+     */
+    QuestionDTO save(QuestionDTO questionDTO);
 
     /**
-     * Save a question.
-     *
-     * @return the persisted entity
+     * Find all questions
+     * @return
      */
-    public QuestionDTO save(QuestionDTO questionDTO);
+    List<QuestionDTO> findAllQuestions();
 
     /**
-     * get all the questions.
-     *
-     * @return the list of entities
+     * Find question by id
+     * @param id
+     * @return
      */
-    public List<QuestionDTO> findAll();
+    QuestionDTO findQuestion(Long id);
 
-    /**
-     * get the "id" question.
-     *
-     * @return the entity
-     */
-    public QuestionDTO findOne(Long id);
-
-    /**
-     * delete the "id" post.
-     */
-    public void delete(Long id);
-
-    /**
-     * search for the question corresponding
-     * to the query.
-     */
-    public List<QuestionDTO> search(String query);
 }
