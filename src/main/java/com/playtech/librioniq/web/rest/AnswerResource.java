@@ -1,9 +1,9 @@
 package com.playtech.librioniq.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.playtech.librioniq.service.AnswerService;
 import com.playtech.librioniq.service.PostService;
 import com.playtech.librioniq.web.rest.dto.QuestionDTO;
-import com.playtech.librioniq.web.rest.mapper.PostMapper;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +27,8 @@ public class AnswerResource {
     private final Logger log = LoggerFactory.getLogger(AnswerResource.class);
 
     @Inject
-    private PostService postService;
+    private AnswerService answerService;
 
-    @Inject
-    private PostMapper postMapper;
 
     /**
      * POST  /questions -> Create a new question.
